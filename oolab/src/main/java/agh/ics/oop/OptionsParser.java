@@ -1,32 +1,27 @@
 package agh.ics.oop;
+
 import agh.ics.oop.model.MoveDirection;
+
+import java.util.Arrays;
+
 public class OptionsParser {
+
     public static MoveDirection[] parserChange(String[] args) {
+        MoveDirection[] pot_directions = new MoveDirection[args.length];
         int cnt = 0;
-        for(String arg : args) {
-            if (arg.equals("f") || arg.equals("r") || arg.equals("l") || arg.equals("b")) {
-
-                cnt += 1;
-            }
-        }
-        MoveDirection[] directions = new MoveDirection[cnt];
-        int n = 0;
-        for (int i = 0; i < args.length; i++) {
-            if (parseSingle(args[i]) != null) {
-                directions[n] = parseSingle(args[i]);
-                n += 1;
+        for (String arg : args) {
+            switch (arg) {
+                case "l" -> pot_directions[cnt++] = MoveDirection.LEFT;
+                case "r" -> pot_directions[cnt++] = MoveDirection.RIGHT;
+                case "f" -> pot_directions[cnt++] = MoveDirection.FORWARD;
+                case "b" -> pot_directions[cnt++] = MoveDirection.BACKWARD;
             }
         }
 
-        return directions;
+        return Arrays.copyOfRange(pot_directions, 0, cnt);
     }
-    public static MoveDirection parseSingle(String arg){
-        return switch (arg){
-            case "f" -> MoveDirection.FORWARD;
-            case "b" -> MoveDirection.BACKWARD;
-            case "l" -> MoveDirection.LEFT;
-            case "r" -> MoveDirection.RIGHT;
-            default -> null;
-        };
+
+    public void main(String[] args) {
+        parserChange(args);
     }
 }
