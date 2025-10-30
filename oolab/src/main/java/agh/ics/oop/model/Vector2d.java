@@ -41,29 +41,11 @@ public class Vector2d {
     }
 
     public Vector2d upperRight(Vector2d other) {
-        int new_x = x;
-        int new_y = y;
-
-        if (x < other.x) {
-            new_x = other.x;
-        }
-        if (y < other.y) {
-            new_y = other.y;
-        }
-        return new Vector2d(new_x, new_y);
+        return new Vector2d(Math.max(x, other.x), Math.max(y, other.y));
     }
 
     public Vector2d lowerLeft(Vector2d other) {
-        int new_x = x;
-        int new_y = y;
-
-        if (x > other.x) {
-            new_x = other.x;
-        }
-        if (y > other.y) {
-            new_y = other.y;
-        }
-        return new Vector2d(new_x, new_y);
+        return new Vector2d(Math.min(x, other.x), Math.min(y, other.y));
     }
 
     public Vector2d opposite() {

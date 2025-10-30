@@ -6,37 +6,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Vector2dTest {
     @Test
-    void equalsValidation()
-    {
+    void equalsValidation() {
         Vector2d v1 = new Vector2d(1, 2);
         Vector2d v2 = new Vector2d(1, 2);
+        Vector2d v3 = new Vector2d(-1, 0);
 
         assertTrue(v1.equals(v2));
         assertTrue(v1.equals(v1));
-
+        assertFalse(v1.equals(v3));
     }
 
     @Test
-    void equalsFalseValidation()
-    {
-        Vector2d v1 = new Vector2d(1, 2);
-        Vector2d v2 = new Vector2d(-1, 0);
-
-        assertFalse(v1.equals(v2));
-
-    }
-
-    @Test
-    void toStringValidation()
-    {
+    void toStringValidation() {
         Vector2d v1 = new Vector2d(8, -4);
 
         assertEquals("(8,-4)", v1.toString());
     }
 
     @Test
-    void precedesValidation()
-    {
+    void precedesValidation() {
         Vector2d v1 = new Vector2d(8, -4);
         Vector2d v2 = new Vector2d(9, -4);
 
@@ -45,8 +33,7 @@ class Vector2dTest {
     }
 
     @Test
-    void precedesFalseValidation()
-    {
+    void precedesFalseValidation() {
         Vector2d v1 = new Vector2d(8, -4);
         Vector2d v2 = new Vector2d(3, -4);
 
@@ -54,8 +41,7 @@ class Vector2dTest {
     }
 
     @Test
-    void followsValidation()
-    {
+    void followsValidation() {
         Vector2d v1 = new Vector2d(8, -4);
         Vector2d v2 = new Vector2d(7, -4);
 
@@ -64,8 +50,7 @@ class Vector2dTest {
     }
 
     @Test
-    void followsFalseValidation()
-    {
+    void followsFalseValidation() {
         Vector2d v1 = new Vector2d(8, -4);
         Vector2d v2 = new Vector2d(100, -4);
 
@@ -73,20 +58,17 @@ class Vector2dTest {
     }
 
     @Test
-    void upperRightValidation()
-    {
+    void upperRightValidation() {
         Vector2d v1 = new Vector2d(8, -4);
         Vector2d v2 = new Vector2d(0, 1);
         Vector2d v3 = new Vector2d(8, 1);
 
         assertEquals(v3, v1.upperRight(v2));
-
-
+        
     }
 
     @Test
-    void lowerLeftValidation()
-    {
+    void lowerLeftValidation() {
         Vector2d v1 = new Vector2d(8, -4);
         Vector2d v2 = new Vector2d(0, 1);
         Vector2d v3 = new Vector2d(0, -4);
@@ -95,8 +77,7 @@ class Vector2dTest {
     }
 
     @Test
-    void addValidation()
-    {
+    void addValidation() {
         Vector2d v1 = new Vector2d(3, -4);
         Vector2d v2 = new Vector2d(9, 7);
         Vector2d v3 = new Vector2d(12, 3);
@@ -105,8 +86,7 @@ class Vector2dTest {
     }
 
     @Test
-    void subtractValidation()
-    {
+    void subtractValidation() {
         Vector2d v1 = new Vector2d(3, -4);
         Vector2d v2 = new Vector2d(9, 7);
         Vector2d v3 = new Vector2d(-6, -11);
@@ -116,8 +96,7 @@ class Vector2dTest {
     }
 
     @Test
-    void oppositeValidation()
-    {
+    void oppositeValidation() {
         Vector2d v1 = new Vector2d(3, -4);
         Vector2d v2 = new Vector2d(0, 0);
         Vector2d v3 = new Vector2d(-3, 4);
