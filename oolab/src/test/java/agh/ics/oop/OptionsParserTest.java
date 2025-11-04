@@ -6,9 +6,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static agh.ics.oop.OptionsParser.parserChange;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OptionsParserTest {
 
@@ -20,15 +21,15 @@ class OptionsParserTest {
             "r, RIGHT"
     })
     void parserChangeValidation(String input, MoveDirection expected) {
-        MoveDirection[] result = parserChange(new String[]{input});
-        assertArrayEquals(new MoveDirection[]{expected}, result);
+        List<MoveDirection> result = parserChange(new String[]{input});
+        assertEquals(List.of(expected), result);
     }
 
     @Test
     void emptyArray() {
         String[] arr = {};
-        MoveDirection[] dir = {};
-        assertArrayEquals(dir, parserChange(arr));
+        List<MoveDirection> expected = List.of();
+        assertEquals(expected, parserChange(arr));
     }
 
     @ParameterizedTest
@@ -39,7 +40,7 @@ class OptionsParserTest {
             "'r', RIGHT"
     })
     void parserChangeSingleCommand(String input, MoveDirection expected) {
-        assertArrayEquals(new MoveDirection[]{expected}, parserChange(new String[]{input}));
+        assertEquals(List.of(expected), parserChange(new String[]{input}));
     }
 
     @ParameterizedTest
@@ -52,13 +53,13 @@ class OptionsParserTest {
     })
     void parserChangeMultipleCommands(String input, String expected) {
         String[] inputArr = input.isEmpty() ? new String[]{} : input.split(" ");
-        MoveDirection[] expectedArr = expected.isEmpty()
-                ? new MoveDirection[]{}
+
+        List<MoveDirection> expectedList = expected.isEmpty()
+                ? List.of()
                 : Arrays.stream(expected.split(" "))
                 .map(MoveDirection::valueOf)
-                .toArray(MoveDirection[]::new);
-        assertArrayEquals(expectedArr, parserChange(inputArr));
+                .toList();
+
+        assertEquals(expectedList, parserChange(inputArr));
     }
-
-
 }
