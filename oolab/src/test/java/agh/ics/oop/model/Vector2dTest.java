@@ -64,7 +64,7 @@ class Vector2dTest {
         Vector2d v3 = new Vector2d(8, 1);
 
         assertEquals(v3, v1.upperRight(v2));
-        
+
     }
 
     @Test
