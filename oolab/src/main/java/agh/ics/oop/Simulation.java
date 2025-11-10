@@ -29,6 +29,11 @@ public class Simulation {
     }
 
     public void run() {
+        if (animals.isEmpty()) {
+            System.out.println("Brak zwierząt do symulacji — kończę działanie.");
+            return;
+        }
+
         int animalIndex = 0;
 
         for (MoveDirection direction : directions) {

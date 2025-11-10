@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Collections;
 import java.util.List;
 
 import static agh.ics.oop.OptionsParser.parserChange;
@@ -83,5 +84,19 @@ class SimulationTest {
 
         List<MoveDirection> parsed = parserChange(input);
         assertEquals(expected, parsed);
+    }
+
+    @Test
+    void ZeroAnimalsVerify() {
+        //given
+        String[] args = {"f", "f", "r"};
+        List<MoveDirection> moves = OptionsParser.parserChange(args);
+        List<Vector2d> startPositions = Collections.emptyList();
+        Simulation simulation = new Simulation(startPositions, moves);
+
+        //when
+        simulation.run();
+        //then
+        assertEquals(0, simulation.getAnimals().size());
     }
 }

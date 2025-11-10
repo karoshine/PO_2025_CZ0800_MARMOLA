@@ -1,18 +1,16 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.World;
+
 public class Animal {
-    private MapDirection orientation;
-    private Vector2d position;
-    private final int MIN = 0;
-    private final int MAX = 4;
+    private MapDirection orientation = MapDirection.NORTH;
+    private Vector2d position = new Vector2d(2, 2);
+
 
     public Animal() {
-        this.orientation = MapDirection.NORTH;
-        this.position = new Vector2d(2, 2);
     }
 
     public Animal(Vector2d initialPosition) {
-        this.orientation = MapDirection.NORTH;
         this.position = initialPosition;
     }
 
@@ -53,7 +51,9 @@ public class Animal {
     }
 
     public boolean isWithinBounds(Vector2d pos) {
-        return pos.x >= MIN && pos.x <= MAX && pos.y >= MIN && pos.y <= MAX;
+        Vector2d lowerLeft = World.MIN_MAP;
+        Vector2d upperRight = World.MAX_MAP;
+        return pos.follows(lowerLeft) && pos.precedes(upperRight);
     }
 
 }

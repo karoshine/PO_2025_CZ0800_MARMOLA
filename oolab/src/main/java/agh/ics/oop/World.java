@@ -1,7 +1,6 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MapDirection;
 
 import agh.ics.oop.model.MoveDirection;
 
@@ -9,9 +8,11 @@ import agh.ics.oop.model.Vector2d;
 
 import java.util.List;
 
-import static agh.ics.oop.OptionsParser.parserChange;
 
 public class World {
+    public static final Vector2d MIN_MAP = new Vector2d(0, 0);
+    public static final Vector2d MAX_MAP = new Vector2d(4, 4);
+
     public static void main(String[] args) {
 
         Animal animal1 = new Animal();
