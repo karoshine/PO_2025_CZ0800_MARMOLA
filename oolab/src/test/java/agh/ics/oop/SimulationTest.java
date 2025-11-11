@@ -1,9 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -27,8 +24,9 @@ class SimulationTest {
         List<Vector2d> positions = List.of(new Vector2d(startX, startY));
         String[] input = commands.split(",");
         List<MoveDirection> moves = parserChange(input);
+        RectangularMap map = new RectangularMap(5,5);
 
-        Simulation simulation = new Simulation(positions, moves);
+        Simulation simulation = new Simulation(positions, moves, map);
         simulation.run();
 
         Animal animal = simulation.getAnimals().get(0);
@@ -41,8 +39,9 @@ class SimulationTest {
     void animalDoesNotLeaveMap() {
         List<Vector2d> positions = List.of(new Vector2d(0, 0));
         List<MoveDirection> moves = parserChange(new String[]{"b", "l", "f"});
+        RectangularMap map = new RectangularMap(5,5);
 
-        Simulation simulation = new Simulation(positions, moves);
+        Simulation simulation = new Simulation(positions, moves, map);
         simulation.run();
 
         Animal animal = simulation.getAnimals().get(0);
@@ -59,7 +58,8 @@ class SimulationTest {
         );
 
         List<MoveDirection> moves = parserChange(new String[]{"f", "b", "l", "r"});
-        Simulation simulation = new Simulation(positions, moves);
+        RectangularMap map = new RectangularMap(5,5);
+        Simulation simulation = new Simulation(positions, moves, map);
         simulation.run();
 
         Animal a1 = simulation.getAnimals().get(0);
@@ -92,7 +92,8 @@ class SimulationTest {
         String[] args = {"f", "f", "r"};
         List<MoveDirection> moves = OptionsParser.parserChange(args);
         List<Vector2d> startPositions = Collections.emptyList();
-        Simulation simulation = new Simulation(startPositions, moves);
+        RectangularMap map = new RectangularMap(5,5);
+        Simulation simulation = new Simulation(startPositions, moves, map);
 
         //when
         simulation.run();
