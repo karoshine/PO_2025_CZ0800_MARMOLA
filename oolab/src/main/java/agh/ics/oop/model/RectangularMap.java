@@ -5,14 +5,14 @@ import agh.ics.oop.model.util.MapVisualizer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RectangularMap implements WorldMap {
+public class RectangularMap implements WorldMap<Animal, Vector2d> {
     public static final Vector2d Zero = new Vector2d(0, 0);
     private final Vector2d upperRight;
     private final Map<Vector2d, Animal> animals = new HashMap<>();
     private final MapVisualizer visualizer = new MapVisualizer(this);
 
     public RectangularMap(int width, int height){
-        upperRight = new Vector2d(width -1, height -1);
+        upperRight = new Vector2d(width - 1, height - 1);
     }
 
     public Vector2d getUpperRight() {
