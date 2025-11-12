@@ -3,98 +3,167 @@ package agh.ics.oop;
 import agh.ics.oop.model.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static agh.ics.oop.model.RectangularMap.Zero;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SimulationTest {
 
     @Test
-    void twoAnimalsMoveCorrectlyWithValidCommands() {
-
-        String[] input = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f"};
-        List<MoveDirection> moves = OptionsParser.parserChange(input);
-        List<Animal> animals = List.of(
-                new Animal(new Vector2d(2, 2)),
-                new Animal(new Vector2d(3, 4))
+    void twoAnimalsMoveCorrectlyWithValidDirections() {
+        // given
+        String[] commands = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f", "f", "f", "f"};
+        List<MoveDirection> expectedMoves = Arrays.asList(
+                MoveDirection.FORWARD, MoveDirection.BACKWARD,
+                MoveDirection.RIGHT, MoveDirection.LEFT,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.RIGHT, MoveDirection.RIGHT,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.FORWARD
         );
-        RectangularMap map = new RectangularMap(5, 5);
 
+        List<MoveDirection> moves = OptionsParser.parserChange(commands);
+        List<Animal> animals = List.of(new Animal(new Vector2d(2, 2)), new Animal(new Vector2d(3, 4)));
+
+        MapDirection[] expectedDirections = {MapDirection.SOUTH, MapDirection.NORTH};
+        Vector2d[] expectedPositions = {new Vector2d(2, 0), new Vector2d(3, 4)};
+
+        RectangularMap map = new RectangularMap(5, 5);
         Simulation<Animal, Vector2d> simulation = new Simulation<>(animals, moves, map);
 
+        // when
         simulation.run();
 
+        // then
         List<Animal> animalsOnMap = simulation.getObjectsOnMap();
 
-        assertEquals(2, animalsOnMap.size());
+        assertEquals(expectedMoves, moves);
+        assertEquals(animalsOnMap.size(), 2);
 
-        assertTrue(animalsOnMap.get(0).getPosition().follows(new Vector2d(0, 0)));
-        assertTrue(animalsOnMap.get(0).getPosition().precedes(map.getUpperRight()));
-        assertTrue(animalsOnMap.get(1).getPosition().follows(new Vector2d(0, 0)));
-        assertTrue(animalsOnMap.get(1).getPosition().precedes(map.getUpperRight()));
-    }
-
-    @Test
-    void threeAnimalsStayInPlaceWithInvalidCommands() {
-        String[] input = {"x", "y", "z"};
-        List<MoveDirection> moves = OptionsParser.parserChange(input);
-        List<Animal> animals = List.of(
-                new Animal(new Vector2d(2, 2)),
-                new Animal(new Vector2d(3, 4)),
-                new Animal(new Vector2d(1, 1))
-        );
-        RectangularMap map = new RectangularMap(5, 5);
-
-        Simulation<Animal, Vector2d> simulation = new Simulation<>(animals, moves, map);
-        simulation.run();
-
-        List<Animal> animalsOnMap = simulation.getObjectsOnMap();
-
-        assertEquals(3, animalsOnMap.size());
         for (int i = 0; i < animalsOnMap.size(); i++) {
-            assertEquals(animals.get(i).getPosition(), animalsOnMap.get(i).getPosition());
-            assertEquals(MapDirection.NORTH, animalsOnMap.get(i).getOrientation());
+            assertTrue(animalsOnMap.get(i).getPosition().follows(Zero)
+                    && animalsOnMap.get(i).getPosition().precedes(map.getUpperRight()));
+            assertTrue(animalsOnMap.get(i).isAt(expectedPositions[i]));
+            assertEquals(animalsOnMap.get(i), map.objectAt(expectedPositions[i]));
+            assertEquals(animalsOnMap.get(i).getOrientation(), expectedDirections[i]);
         }
     }
 
     @Test
-    void fourAnimalsHandleMixedCommandsCorrectly() {
-        String[] input = {"f", "z", "r", "l", "b", "f"};
-        List<MoveDirection> moves = OptionsParser.parserChange(input);
+    void threeAnimalsStayInPlaceWithInvalidDirections() {
+        // given
+        String[] commands = {"fb", "bgh", "rr", "u", "a", "mm"};
+        List<MoveDirection> expectedMoves = new ArrayList<>();
+
+        List<MoveDirection> moves = OptionsParser.parserChange(commands);
+        List<Vector2d> startPositions = List.of(new Vector2d(2, 2), new Vector2d(3, 4), new Vector2d(1, 1));
+        List<Animal> animals = List.of(
+                new Animal(startPositions.get(0)),
+                new Animal(startPositions.get(1)),
+                new Animal(startPositions.get(2))
+        );
+
+        RectangularMap map = new RectangularMap(5, 5);
+        Simulation<Animal, Vector2d> simulation = new Simulation<>(animals, moves, map);
+
+        // when
+        simulation.run();
+
+        // then
+        List<Animal> animalsOnMap = simulation.getObjectsOnMap();
+        assertEquals(expectedMoves, moves);
+        assertEquals(3, animalsOnMap.size());
+
+        for (int i = 0; i < animalsOnMap.size(); i++) {
+            assertTrue(animalsOnMap.get(i).getPosition().follows(Zero)
+                    && animalsOnMap.get(i).getPosition().precedes(map.getUpperRight()));
+            assertTrue(animalsOnMap.get(i).isAt(startPositions.get(i)));
+            assertEquals(animalsOnMap.get(i), map.objectAt(startPositions.get(i)));
+            assertEquals(animalsOnMap.get(i).getOrientation(), MapDirection.NORTH);
+        }
+    }
+
+    @Test
+    void fourAnimalsHandleMixedDirectionsCorrectly() {
+        // given
+        String[] commands = {"mn", "bb", "f", "m", "r", "l", "b", "f", "u", "f", "f", "b"};
+        List<MoveDirection> expectedMoves = Arrays.asList(
+                MoveDirection.FORWARD, MoveDirection.RIGHT,
+                MoveDirection.LEFT, MoveDirection.BACKWARD,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.BACKWARD
+        );
+
+        List<MoveDirection> moves = OptionsParser.parserChange(commands);
         List<Animal> animals = List.of(
                 new Animal(new Vector2d(0, 0)),
                 new Animal(new Vector2d(4, 4)),
                 new Animal(new Vector2d(3, 2)),
                 new Animal(new Vector2d(2, 1))
         );
-        RectangularMap map = new RectangularMap(5, 5);
 
+        MapDirection[] expectedDirections = {MapDirection.NORTH, MapDirection.EAST, MapDirection.WEST, MapDirection.NORTH};
+        Vector2d[] expectedPositions = {new Vector2d(0, 2), new Vector2d(4, 4), new Vector2d(2, 2), new Vector2d(2, 0)};
+
+        RectangularMap map = new RectangularMap(5, 5);
         Simulation<Animal, Vector2d> simulation = new Simulation<>(animals, moves, map);
+
+        // when
         simulation.run();
 
+        // then
         List<Animal> animalsOnMap = simulation.getObjectsOnMap();
-
+        assertEquals(expectedMoves, moves);
         assertEquals(4, animalsOnMap.size());
-        for (Animal a : animalsOnMap) {
-            assertTrue(a.getPosition().follows(new Vector2d(0, 0)));
-            assertTrue(a.getPosition().precedes(map.getUpperRight()));
+
+        for (int i = 0; i < animalsOnMap.size(); i++) {
+            assertTrue(animalsOnMap.get(i).getPosition().follows(Zero)
+                    && animalsOnMap.get(i).getPosition().precedes(map.getUpperRight()));
+            assertTrue(animalsOnMap.get(i).isAt(expectedPositions[i]));
+            assertEquals(animalsOnMap.get(i), map.objectAt(expectedPositions[i]));
+            assertEquals(animalsOnMap.get(i).getOrientation(), expectedDirections[i]);
         }
     }
 
     @Test
     void textBlocksMoveCorrectlyOnTextMap() {
-        List<String> texts = List.of("Ala", "ma", "kota");
-        String[] input = {"r", "r", "l", "f"};
-        List<MoveDirection> moves = OptionsParser.parserChange(input);
-        TextMap map = new TextMap();
+        // given
+        String[] commands = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f", "f", "f", "f"};
+        List<MoveDirection> expectedMoves = Arrays.asList(
+                MoveDirection.FORWARD, MoveDirection.BACKWARD,
+                MoveDirection.RIGHT, MoveDirection.LEFT,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.RIGHT, MoveDirection.RIGHT,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.FORWARD,
+                MoveDirection.FORWARD, MoveDirection.FORWARD
+        );
 
-        Simulation<String, Integer> simulation = new Simulation<>(texts, moves, map);
+        List<MoveDirection> moves = OptionsParser.parserChange(commands);
+        List<String> textBlocks = List.of("Ala ma białego kota".split(" "));
+
+        int[] expectedPositions = {2, 0, 3, 1};
+
+        TextMap map = new TextMap();
+        Simulation<String, Integer> simulation = new Simulation<>(textBlocks, moves, map);
+
+        // when
         simulation.run();
 
-        List<String> objectsOnMap = simulation.getObjectsOnMap();
-        assertEquals(3, objectsOnMap.size());
-        assertTrue(objectsOnMap.containsAll(texts));
+        // then
+        List<String> textsOnMap = simulation.getObjectsOnMap();
+        assertEquals(expectedMoves, moves);
+        assertEquals(4, textsOnMap.size());
+
+        for (int i = 0; i < textsOnMap.size(); i++) {
+            assertEquals(textsOnMap.get(i), map.objectAt(expectedPositions[i]));
+        }
     }
 }
