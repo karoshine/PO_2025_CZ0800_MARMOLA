@@ -1,55 +1,43 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Simulation {
+public class Simulation<T, P> {
+    private final List<MoveDirection> moves;
+    private final List<T> objectsOnMap = new ArrayList<>();
+    private final WorldMap<T, P> map;
 
-    private final List<Animal> animals;
-    private final List<MoveDirection> directions;
-    private final WorldMap worldMap;
-
-    public Simulation(List<Vector2d> initialPositions, List<MoveDirection> directions, WorldMap map) {
-        this.directions = directions;
-        this.worldMap = map;
-        this.animals = new ArrayList<>();
-
-        for (Vector2d pos : initialPositions) {
-            Animal animal = new Animal(pos);
-            if (this.worldMap.place (animal)) {
-                this.animals.add(animal);
+    public Simulation(List<T> objects, List<MoveDirection> moves, WorldMap<T, P> map) {
+        this.moves = moves;
+        this.map = map;
+        for (T object : objects) {
+            if (map.place(object)) {
+                objectsOnMap.add(object);
             }
         }
-
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
+    public List<T> getObjectsOnMap() {
+        return objectsOnMap;
     }
 
     public void run() {
-        if (animals.isEmpty()) {
+        if (objectsOnMap.isEmpty()) {
             System.out.println("Brak zwierząt do symulacji — kończę działanie.");
             return;
         }
 
-        int animalIndex = 0;
+        for (int i = 0; i < moves.size(); i++) {
+            int object_idx = i % objectsOnMap.size();
+            T currentObject = objectsOnMap.get(object_idx);
+            map.move(currentObject, moves.get(i));
 
-        for (MoveDirection direction : directions) {
-            Animal currentAnimal = animals.get(animalIndex);
-            worldMap.move(currentAnimal, direction);
-
-            System.out.println(
-                    "Animal" + animalIndex + ": " + currentAnimal
-            );
-            System.out.println(worldMap);
-
-            animalIndex = (animalIndex + 1) % animals.size();
+            System.out.println("Animal" + object_idx + ": " + currentObject);
+            System.out.println(map);
         }
     }
 }
