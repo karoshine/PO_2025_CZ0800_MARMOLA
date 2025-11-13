@@ -4,6 +4,7 @@ import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RectangularMap implements WorldMap {
     public static final Vector2d Zero = new Vector2d(0, 0);
@@ -45,7 +46,7 @@ public class RectangularMap implements WorldMap {
 
     @Override
     public void move(Animal animal, MoveDirection direction) {
-        if (animals.get(animal.getPosition()) == animal){
+        if (Objects.equals(animals.get(animal.getPosition()), animal)) {
             animals.remove(animal.getPosition(), animal);
             animal.move(direction, this);
             animals.put(animal.getPosition(), animal);
