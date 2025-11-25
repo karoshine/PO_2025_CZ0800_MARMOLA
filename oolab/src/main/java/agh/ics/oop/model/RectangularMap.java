@@ -13,14 +13,6 @@ public class RectangularMap extends AbstractWorldMap{
         return !isOccupied(position) && position.precedes(upperRightCorner) && position.follows(lowerLeftCorner);
     }
 
-    public Vector2d getUpperRight(){
-        return upperRightCorner;
-    }
-
-    @Override
-    public String toString(){
-        return mapVisualizer.draw(lowerLeftCorner,upperRightCorner);
-    }
 
 
 }

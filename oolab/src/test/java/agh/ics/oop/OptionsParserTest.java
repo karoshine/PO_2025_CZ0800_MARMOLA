@@ -4,26 +4,33 @@ import agh.ics.oop.model.MoveDirection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static agh.ics.oop.OptionsParser.parserChange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OptionsParserTest {
 
     @ParameterizedTest
     @CsvSource({
             "f, FORWARD",
+            "forward, FORWARD",
             "b, BACKWARD",
+            "backward, BACKWARD",
             "l, LEFT",
-            "r, RIGHT"
+            "left, LEFT",
+            "r, RIGHT",
+            "right, RIGHT"
     })
-    void parserChangeValidation(String input, MoveDirection expected) {
+    void parserChangeValidInputs(String input, MoveDirection expected) {
         List<MoveDirection> result = parserChange(new String[]{input});
         assertEquals(List.of(expected), result);
     }
+
 
     @Test
     void emptyArray() {
@@ -34,32 +41,36 @@ class OptionsParserTest {
 
     @ParameterizedTest
     @CsvSource({
-            "'f', FORWARD",
-            "'b', BACKWARD",
-            "'l', LEFT",
-            "'r', RIGHT"
+            "'r l f b', 'RIGHT LEFT FORWARD BACKWARD'",
+            "'forward backward left right', 'FORWARD BACKWARD LEFT RIGHT'",
+            "'f backward l right', 'FORWARD BACKWARD LEFT RIGHT'"
     })
-    void parserChangeSingleCommand(String input, MoveDirection expected) {
-        assertEquals(List.of(expected), parserChange(new String[]{input}));
-    }
+    void parserChangeMultipleValidCommands(String input, String expected) {
+        String[] inputArr = input.split(" ");
 
-    @ParameterizedTest
-    @CsvSource({
-            "'c w dfvsb 352345 ,,,', ''",
-            "'r l f b l b', 'RIGHT LEFT FORWARD BACKWARD LEFT BACKWARD'",
-            "'r rl fb b rlfb l', 'RIGHT BACKWARD LEFT'",
-            "'r l 1r 0 FORWARD b LEFT', 'RIGHT LEFT BACKWARD'",
-            "'', ''"
-    })
-    void parserChangeMultipleCommands(String input, String expected) {
-        String[] inputArr = input.isEmpty() ? new String[]{} : input.split(" ");
-
-        List<MoveDirection> expectedList = expected.isEmpty()
-                ? List.of()
-                : Arrays.stream(expected.split(" "))
+        List<MoveDirection> expectedList = Arrays.stream(expected.split(" "))
                 .map(MoveDirection::valueOf)
                 .toList();
 
         assertEquals(expectedList, parserChange(inputArr));
+    }
+
+    @ValueSource(strings = {
+            "x",
+            "try",
+            "1r",
+            "FORWARD",
+            "Left"
+    })
+    void parserChangeInvalidInputThrowsException(String input) {
+        String[] args = {input};
+        assertThrows(IllegalArgumentException.class, () -> parserChange(args));
+    }
+
+
+    @Test
+    void parserChangeMixedInputThrowsException() {
+        String[] args = {"f", "l", "wrong_argument", "r"};
+        assertThrows(IllegalArgumentException.class, () -> parserChange(args));
     }
 }

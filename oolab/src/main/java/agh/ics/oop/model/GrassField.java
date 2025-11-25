@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.RandomPositionGenerator;
 
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class GrassField extends AbstractWorldMap{
     }
 
     @Override
-    public String toString(){
+    public Boundary getCurrentBounds() {
         List<WorldElement> mapElements = getElements();
         Vector2d lowestPosition = mapElements.getFirst().getPosition();
         Vector2d highestPosition = mapElements.getFirst().getPosition();
@@ -50,6 +51,6 @@ public class GrassField extends AbstractWorldMap{
             lowestPosition = lowestPosition.lowerLeft(element.getPosition());
             highestPosition = highestPosition.upperRight(element.getPosition());
         }
-        return mapVisualizer.draw(lowestPosition,highestPosition);
+        return new Boundary(lowestPosition, highestPosition);
     }
 }

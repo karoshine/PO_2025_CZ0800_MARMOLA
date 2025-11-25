@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.util.Boundary;
+import agh.ics.oop.model.util.IncorrectPositionException;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ abstract class AbstractWorldMap implements WorldMap {
     protected final Vector2d upperRightCorner;
     protected final Map<Vector2d, Animal> animals = new HashMap<Vector2d, Animal>();
     protected final MapVisualizer mapVisualizer = new MapVisualizer(this);
+    protected List<MapChangeListener> listeners = new ArrayList<>();
 
     AbstractWorldMap(Vector2d lowerLeftCorner, Vector2d upperRightCorner) {
         this.lowerLeftCorner = lowerLeftCorner;
@@ -33,20 +36,26 @@ abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public boolean place(Animal animal){
+    public void place(Animal animal) throws IncorrectPositionException{
         if (canMoveTo(animal.getPosition())) {
             animals.put(animal.getPosition(), animal);
-            return true;
+            mapChanged("Animal has been placed at %s".formatted(animal.getPosition()));
+        } else {
+            throw new IncorrectPositionException(animal.getPosition());
         }
-        return false;
     }
 
     @Override
     public void move(Animal animal, MoveDirection direction){
         if (objectAt(animal.getPosition()) == animal){
+            Vector2d previousPosition = animal.getPosition();
             animals.remove(animal.getPosition(), animal);
             animal.move(direction,this);
             animals.put(animal.getPosition(), animal);
+            Vector2d currentPosition = animal.getPosition();
+            if (!(previousPosition.equals(currentPosition))) {
+                mapChanged("Animal moved on %s".formatted(animal.getPosition()));
+            }
         }
     }
 
@@ -55,11 +64,33 @@ abstract class AbstractWorldMap implements WorldMap {
         return new ArrayList<>(List.copyOf(animals.values()));
     }
 
-    public Vector2d getLowerLeftCorner() {
-        return lowerLeftCorner;
+    @Override
+    public Boundary getCurrentBounds() {
+        return new Boundary(lowerLeftCorner, upperRightCorner);
     }
 
-    public Vector2d getUpperRightCorner() {
-        return upperRightCorner;
+    @Override
+    public String toString() {
+        Boundary boundary = getCurrentBounds();
+        return mapVisualizer.draw(boundary.start(),  boundary.end());
     }
+
+    public void subscribe(MapChangeListener mapChangeListener) {
+        listeners.add(mapChangeListener);
+    }
+
+    public void unsubscribe(MapChangeListener mapChangeListener) {
+        listeners.remove(mapChangeListener);
+    }
+
+    public List<MapChangeListener> getListeners() {
+        return listeners;
+    }
+
+    public void mapChanged(String message) {
+        for (MapChangeListener listener : listeners) {
+            listener.mapChanged(this, message);
+        }
+    }
+
 }
