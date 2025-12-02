@@ -1,6 +1,5 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.model.util.Boundary;
 import agh.ics.oop.model.util.IncorrectPositionException;
 import agh.ics.oop.model.util.MapVisualizer;
 
@@ -10,21 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 abstract class AbstractWorldMap implements WorldMap {
-    protected final Vector2d lowerLeftCorner;
-    protected final Vector2d upperRightCorner;
     protected final Map<Vector2d, Animal> animals = new HashMap<Vector2d, Animal>();
     protected final MapVisualizer mapVisualizer = new MapVisualizer(this);
     protected List<MapChangeListener> listeners = new ArrayList<>();
 
-    AbstractWorldMap(Vector2d lowerLeftCorner, Vector2d upperRightCorner) {
-        this.lowerLeftCorner = lowerLeftCorner;
-        this.upperRightCorner = upperRightCorner;
-    }
-
-    AbstractWorldMap() {
-        this.lowerLeftCorner = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
-        this.upperRightCorner = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    }
     @Override
     public WorldElement objectAt(Vector2d position) {
         return animals.get(position);
@@ -64,10 +52,6 @@ abstract class AbstractWorldMap implements WorldMap {
         return new ArrayList<>(List.copyOf(animals.values()));
     }
 
-    @Override
-    public Boundary getCurrentBounds() {
-        return new Boundary(lowerLeftCorner, upperRightCorner);
-    }
 
     @Override
     public String toString() {

@@ -29,6 +29,7 @@ public class World {
         }
         catch (IllegalArgumentException e) {
             IO.println(e.getMessage());
+            System.exit(1);
         }
         IO.println("System zakonczyl dzialanie");
     }
