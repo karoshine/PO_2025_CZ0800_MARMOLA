@@ -53,6 +53,7 @@ abstract class AbstractWorldMap implements WorldMap {
     }
 
 
+
     @Override
     public String toString() {
         Boundary boundary = getCurrentBounds();
@@ -78,3 +79,4 @@ abstract class AbstractWorldMap implements WorldMap {
     }
 
 }
+
