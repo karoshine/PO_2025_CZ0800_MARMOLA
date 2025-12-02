@@ -82,8 +82,7 @@ class SimulationTest {
                 MoveDirection.LEFT
         );
 
-        List<MoveDirection> parsed = parserChange(input);
-        assertEquals(expected, parsed);
+        assertThrows(IllegalArgumentException.class, () -> parserChange(input));
     }
 
     @Test

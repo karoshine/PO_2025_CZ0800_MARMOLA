@@ -1,60 +1,43 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.model.util.MapVisualizer;
+public class RectangularMap extends AbstractWorldMap{
+    private final Vector2d lowerLeftCorner = new Vector2d(0,0);
+    private final Vector2d upperRightCorner;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-public class RectangularMap implements WorldMap {
-    public static final Vector2d Zero = new Vector2d(0, 0);
-    private final Vector2d upperRight;
-    private final Map<Vector2d, Animal> animals = new HashMap<>();
-    private final MapVisualizer visualizer = new MapVisualizer(this);
-
-    public RectangularMap(int width, int height){
-        upperRight = new Vector2d(width -1, height -1);
-    }
-
-    public Vector2d getUpperRight() {
-        return upperRight;
+    public RectangularMap(int width, int height) {
+        this.upperRightCorner = new Vector2d(width-1,height-1);
     }
 
     @Override
-    public Animal objectAt(Vector2d position) {
-        return animals.get(position);
-    }
+    public Boundary getCurrentBounds() {
+        return new Boundary(lowerLeftCorner, upperRightCorner);
+    private final Vector2d lowerLeftCorner;
+    private final Vector2d upperRightCorner;
 
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        return objectAt(position) != null;
+    public RectangularMap(int width, int height) {
+        this.lowerLeftCorner = new Vector2d(0,0);
+        this.upperRightCorner = new Vector2d(width-1,height-1);
     }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return position.follows(Zero) && position.precedes(upperRight) && !isOccupied(position);
+
+        return !isOccupied(position) && position.precedes(upperRightCorner) && position.follows(lowerLeftCorner);
+    }
+
+
+    public Vector2d getLowerLeftCorner() {
+        return lowerLeftCorner;
+    }
+
+    public Vector2d getUpperRightCorner() {
+        return upperRightCorner;
     }
 
     @Override
-    public boolean place(Animal animal) {
-        if (canMoveTo(animal.getPosition())){
-            animals.put(animal.getPosition(), animal);
-            return true;
-        }
-        return false;
+    public String toString(){
+        return mapVisualizer.draw(lowerLeftCorner,upperRightCorner);
     }
 
-    @Override
-    public void move(Animal animal, MoveDirection direction) {
-        if (Objects.equals(animals.get(animal.getPosition()), animal)) {
-            animals.remove(animal.getPosition(), animal);
-            animal.move(direction, this);
-            animals.put(animal.getPosition(), animal);
-        }
-    }
 
-    @Override
-    public String toString() {
-        return visualizer.draw(Zero, upperRight);
-    }
 }
