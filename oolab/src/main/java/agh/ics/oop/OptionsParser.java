@@ -7,22 +7,22 @@ import java.util.List;
 
 public class OptionsParser {
 
-    public static List<MoveDirection> parserChange(String[] args) {
-        List<MoveDirection> potDirections = new ArrayList<>();
 
-        for (String arg : args) {
+    public static List<MoveDirection> parserChange(String[] args){
+        List<MoveDirection> directions = new ArrayList<>();
+        for(String arg : args){
             switch (arg) {
-                case "l" -> potDirections.add(MoveDirection.LEFT);
-                case "r" -> potDirections.add(MoveDirection.RIGHT);
-                case "f" -> potDirections.add(MoveDirection.FORWARD);
-                case "b" -> potDirections.add(MoveDirection.BACKWARD);
+                case "l","left" -> directions.add(MoveDirection.LEFT);
+                case "r","right" -> directions.add(MoveDirection.RIGHT);
+                case "f","forward" -> directions.add(MoveDirection.FORWARD);
+                case "b","backward" -> directions.add(MoveDirection.BACKWARD);
+                default -> throw new IllegalArgumentException("%s is not legal move specification".formatted(arg));
             }
+
         }
-
-        return potDirections;
+        return directions;
     }
-
-    public static void main(String[] args) {
+    public void main(String[] args) {
         parserChange(args);
     }
 }
