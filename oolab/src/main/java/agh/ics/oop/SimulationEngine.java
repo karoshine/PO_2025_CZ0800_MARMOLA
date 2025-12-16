@@ -12,7 +12,7 @@ public class SimulationEngine {
     private final List<Thread> threads = new ArrayList<>();
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
-    SimulationEngine(List<Simulation> simulations) {
+    public SimulationEngine(List<Simulation> simulations) {
         this.simulations = simulations;
     }
 
@@ -39,9 +39,9 @@ public class SimulationEngine {
 
     public void awaitSimulationEnd(){
         try {
-            for(Thread thread : threads) {
+            /*for(Thread thread : threads) {
                 thread.join();
-            }
+            }*/
             executor.shutdown();
             if(!executor.awaitTermination(10, TimeUnit.SECONDS)) {
                 executor.shutdownNow();

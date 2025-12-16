@@ -66,10 +66,12 @@ abstract class AbstractWorldMap implements WorldMap {
         return mapVisualizer.draw(boundary.start(),  boundary.end());
     }
 
+    @Override
     public void subscribe(MapChangeListener mapChangeListener) {
         listeners.add(mapChangeListener);
     }
 
+    @Override
     public void unsubscribe(MapChangeListener mapChangeListener) {
         listeners.remove(mapChangeListener);
     }

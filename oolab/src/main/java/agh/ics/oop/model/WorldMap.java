@@ -50,4 +50,7 @@ public interface WorldMap extends MoveValidator {
     public Boundary getCurrentBounds();
 
     UUID getID();
+
+    public void subscribe(MapChangeListener mapChangeListener);
+    public void unsubscribe(MapChangeListener mapChangeListener);
 }

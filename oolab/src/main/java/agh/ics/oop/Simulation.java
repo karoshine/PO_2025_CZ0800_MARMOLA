@@ -47,6 +47,13 @@ public class Simulation implements Runnable  {
             Animal currentAnimal = animals.get(animalIndex);
             worldMap.move(currentAnimal, direction);
 
+            try{
+                Thread.sleep(500);
+            }catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+                break;
+            }
+
             animalIndex = (animalIndex + 1) % animals.size();
         }
     }

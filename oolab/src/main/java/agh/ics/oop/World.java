@@ -42,6 +42,7 @@ public class World {
             IO.println(e.getMessage());
         }
         IO.println("System zakonczyl dzialanie");
+        WorldGUI.main(args);
     }
 
 }
