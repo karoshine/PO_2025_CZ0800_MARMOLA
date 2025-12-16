@@ -3,15 +3,22 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.util.IncorrectPositionException;
 import agh.ics.oop.model.util.MapVisualizer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animals = new HashMap<Vector2d, Animal>();
     protected final MapVisualizer mapVisualizer = new MapVisualizer(this);
     protected List<MapChangeListener> listeners = new ArrayList<>();
+    protected final UUID id;
+
+    public AbstractWorldMap() {
+        this.id = UUID.randomUUID();
+    }
+
+    @Override
+    public UUID getID() {
+        return id;
+    }
 
     @Override
     public WorldElement objectAt(Vector2d position) {
@@ -51,7 +58,6 @@ abstract class AbstractWorldMap implements WorldMap {
     public List<WorldElement> getElements() {
         return new ArrayList<>(List.copyOf(animals.values()));
     }
-
 
 
     @Override
