@@ -28,14 +28,12 @@ public class SimulationEngine {
             threads.add(thread);
             thread.start();
         }
-        awaitSimulationEnd();
     }
 
     public void runAsyncInThreadPool(){
         for(Simulation simulation : simulations){
             executor.submit(simulation);
         }
-        awaitSimulationEnd();
     }
 
 
@@ -47,10 +45,9 @@ public class SimulationEngine {
             executor.shutdown();
             if(!executor.awaitTermination(10, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
-
             }
         } catch (InterruptedException e) {
-            IO.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 }
