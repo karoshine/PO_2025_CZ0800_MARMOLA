@@ -37,7 +37,7 @@ public class Simulation implements Runnable  {
     @Override
     public void run() {
         if (animals.isEmpty()) {
-            System.out.println("Brak zwierząt do symulacji — kończę działanie.");
+            System.out.println("Brak zwierząt — kończę działanie.");
             return;
         }
 

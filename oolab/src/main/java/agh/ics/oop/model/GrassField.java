@@ -19,7 +19,12 @@ public class GrassField extends AbstractWorldMap{
             grass.put(grassPosition, new Grass(grassPosition));
         }
     }
-
+    @Override
+    public List<WorldElement> getElements() {
+        List<WorldElement> elements = super.getElements();
+        elements.addAll(List.copyOf(grass.values()));
+        return elements;
+    }
     @Override
     public WorldElement objectAt(Vector2d position) {
         if (super.objectAt(position) != null) {
@@ -34,12 +39,6 @@ public class GrassField extends AbstractWorldMap{
         return !(objectAt(position) instanceof Animal);
     }
 
-    @Override
-    public List<WorldElement> getElements() {
-        List<WorldElement> elements = super.getElements();
-        elements.addAll(List.copyOf(grass.values()));
-        return elements;
-    }
 
     @Override
     public Boundary getCurrentBounds() {

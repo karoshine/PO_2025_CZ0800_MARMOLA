@@ -4,7 +4,6 @@ import agh.ics.oop.OptionsParser;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.Boundary;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,14 +16,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
 
     private WorldMap worldMap;
 
-    private static final int CELL_SIZE = 40;
+    private static final int CELL_SIZE = 45;
     private static final double GRID_LINE_WIDTH = 2.0;
 
     @FXML
@@ -59,28 +57,43 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     public void drawMap() {
-
         redraw();
     }
 
     private void redraw() {
-        Boundary boundary = worldMap.getCurrentBounds();
-        Vector2d bottomLeft = boundary.start();
-        Vector2d topRight = boundary.end();
+        Vector2d bottomLeft = new Vector2d(1, 1);
+        Vector2d topRight = new Vector2d(10, 10);
 
         int width = topRight.getX() - bottomLeft.getX() + 1;
         int height = topRight.getY() - bottomLeft.getY() + 1;
 
-        resizeCanvas(width, height);
+        resizeCanvas(width + 1, height + 1);
 
         GraphicsContext gc = mapGrid.getGraphicsContext2D();
         clear(gc);
-        drawGrid(gc, width, height);
+        drawGrid(gc, width + 1, height + 1);
         setupTextStyle(gc);
+
+        gc.fillText("y\\x", CELL_SIZE / 2.0, CELL_SIZE / 2.0);
+
+        for (int i = 0; i < width; i++) {
+            gc.fillText(
+                    String.valueOf(bottomLeft.getX() + i),
+                    (i + 1) * CELL_SIZE + CELL_SIZE / 2.0,
+                    CELL_SIZE / 2.0
+            );
+        }
+
+        for (int i = 0; i < height; i++) {
+            gc.fillText(
+                    String.valueOf(bottomLeft.getY() + i),
+                    CELL_SIZE / 2.0,
+                    (i + 1) * CELL_SIZE + CELL_SIZE / 2.0
+            );
+        }
 
         renderObjects(gc, bottomLeft, topRight);
     }
-
 
     private void resizeCanvas(int widthCells, int heightCells) {
         mapGrid.setWidth(widthCells * CELL_SIZE);
@@ -88,12 +101,12 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void clear(GraphicsContext gc) {
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.BLUEVIOLET);
         gc.fillRect(0, 0, mapGrid.getWidth(), mapGrid.getHeight());
     }
 
     private void drawGrid(GraphicsContext gc, int widthCells, int heightCells) {
-        gc.setStroke(Color.GRAY);
+        gc.setStroke(Color.BLACK);
         gc.setLineWidth(GRID_LINE_WIDTH);
 
         double offset = GRID_LINE_WIDTH / 2;
@@ -112,7 +125,7 @@ public class SimulationPresenter implements MapChangeListener {
     private void setupTextStyle(GraphicsContext gc) {
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
-        gc.setFont(new Font("Arial", 15));
+        gc.setFont(new Font("Arial", 22));
         gc.setFill(Color.BLACK);
     }
 
@@ -124,7 +137,7 @@ public class SimulationPresenter implements MapChangeListener {
             for (int row = 0; row < rows; row++) {
                 Vector2d position = new Vector2d(
                         lowerLeft.getX() + col,
-                        upperRight.getY() - row
+                        lowerLeft.getY() + row
                 );
 
                 if (!worldMap.isOccupied(position)) {
@@ -136,8 +149,8 @@ public class SimulationPresenter implements MapChangeListener {
                     continue;
                 }
 
-                double x = col * CELL_SIZE + CELL_SIZE / 2.0;
-                double y = (rows - 1 - row) * CELL_SIZE + CELL_SIZE / 2.0;
+                double x = (col + 1) * CELL_SIZE + CELL_SIZE / 2.0;
+                double y = (row + 1) * CELL_SIZE + CELL_SIZE / 2.0;
 
                 gc.fillText(element.toString(), x, y);
             }
@@ -145,13 +158,13 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     @FXML
-    public void onSimulationStartClicked(ActionEvent event) {
+    public void onSimulationStartCl(ActionEvent event) {
         String input = moveListField.getText();
         List<MoveDirection> directions = OptionsParser.parserChange(input.split("\\s+"));
 
         List<Vector2d> startPositions = List.of(
-                new Vector2d(3, 3),
-                new Vector2d(6, 8)
+                new Vector2d(3, 4),
+                new Vector2d(9, 7)
         );
 
         Simulation simulation = new Simulation(startPositions, directions, worldMap);
