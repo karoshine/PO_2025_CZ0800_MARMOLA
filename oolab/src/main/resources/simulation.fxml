@@ -18,12 +18,10 @@
             <Label fx:id="moveInfoLabel" text="Wpisz ruchy i nacisnij start" style="-fx-text-fill: blue;"/>
         </VBox>
     </top>
-
     <center>
         <VBox spacing="10" alignment="CENTER">
             <Label fx:id="infoLabel" text="All animals will be living here!" textAlignment="CENTER"/>
             <Canvas fx:id="mapGrid" width="600" height="400"/>
         </VBox>
     </center>
-
 </BorderPane>
