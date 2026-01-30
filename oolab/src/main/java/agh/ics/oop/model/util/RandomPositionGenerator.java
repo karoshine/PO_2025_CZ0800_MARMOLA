@@ -27,11 +27,6 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
                     positions[i] = i;
                 }
             }
-            @Override
-            public boolean hasNext() {
-                return idx < grassCount;
-
-            }
 
             @Override
             public Vector2d next() {
@@ -47,6 +42,12 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
                 Vector2d drawnPosition = new Vector2d(drawn % maxWidth, drawn / maxWidth);
                 idx++;
                 return drawnPosition;
+
+            }
+
+            @Override
+            public boolean hasNext() {
+                return idx < grassCount;
 
             }
         };

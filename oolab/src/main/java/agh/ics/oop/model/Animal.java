@@ -35,18 +35,19 @@ public class Animal implements WorldElement {
         switch (direction) {
             case RIGHT -> orientation = orientation.next();
             case LEFT -> orientation = orientation.previous();
-            case FORWARD -> {
-                Vector2d newPosition = position.add(orientation.toUnitVector());
-                if (validator.canMoveTo(newPosition)) {
-                    position = newPosition;
-                }
-            }
             case BACKWARD -> {
                 Vector2d newPosition = position.subtract(orientation.toUnitVector());
                 if (validator.canMoveTo(newPosition)) {
                     position = newPosition;
                 }
             }
+            case FORWARD -> {
+                Vector2d newPosition = position.add(orientation.toUnitVector());
+                if (validator.canMoveTo(newPosition)) {
+                    position = newPosition;
+                }
+            }
+
         }
     }
 
